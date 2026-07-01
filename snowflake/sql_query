@@ -1,0 +1,38 @@
+-- Storage Integration
+CREATE STORAGE INTEGRATION weather_s3_integration
+  TYPE = EXTERNAL_STAGE
+  STORAGE_PROVIDER = 'S3'
+  ENABLED = TRUE
+  STORAGE_AWS_ROLE_ARN = 'arn:aws:iam::XXXXXXXXXXXX:role/snowflake-s3-role'
+  STORAGE_ALLOWED_LOCATIONS = ('s3://weather-data-vidhya-2026/weather-data/');
+
+-- Database and Schema
+CREATE DATABASE weather_db;
+CREATE SCHEMA weather_db.weather_schema;
+USE DATABASE weather_db;
+USE SCHEMA weather_schema;
+
+-- External Stage
+CREATE STAGE weather_stage
+  STORAGE_INTEGRATION = weather_s3_integration
+  URL = 's3://weather-data-vidhya-2026/weather-data/'
+  FILE_FORMAT = (TYPE = 'JSON');
+
+-- Table
+CREATE TABLE weather_raw (
+    city        VARCHAR,
+    timestamp   VARCHAR,
+    temperature FLOAT,
+    humidity    INT,
+    pressure    INT,
+    description VARCHAR
+);
+
+-- Snowpipe
+CREATE PIPE weather_pipe
+  AUTO_INGEST = TRUE
+  AS
+  COPY INTO weather_raw
+  FROM @weather_stage
+  FILE_FORMAT = (TYPE = 'JSON')
+  MATCH_BY_COLUMN_NAME = CASE_INSENSITIVE;
