@@ -15,7 +15,7 @@ every hour and loads it into Snowflake for analysis.
 
 | Service             | Purpose                           |
 | ------------------- | --------------------------------- |
-| AWS EventBridge     | Scheduled trigger (every 1 hour)  |
+| AWS EventBridge     | Scheduled trigger (every 30 mins) |
 | AWS Lambda (Python) | Fetch weather + write to S3       |
 | OpenWeather API     | Live weather data source          |
 | AWS DynamoDB        | NoSQL storage with stream enabled |
@@ -28,7 +28,7 @@ every hour and loads it into Snowflake for analysis.
 
 ## Pipeline Flow
 
-EventBridge (hourly schedule)
+EventBridge (30 minute schedule)
 ↓
 Lambda 1 → fetches from OpenWeather API
 ↓
@@ -99,5 +99,5 @@ aws-snowflake-weather-pipeline/
 ## Author
 
 **Vidhya Sugathan**  
-Data Analyst | AWS | Snowflake | Python | SQL  
+Data Engineer | AWS | Snowflake | Python | SQL  
 [LinkedIn](https://www.linkedin.com/in/vidhya-sugathan) | [Portfolio](https://vidhyasugathan.vercel.app)
